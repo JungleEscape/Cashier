@@ -44,8 +44,20 @@ h1, h2 {
 /* Styling untuk item menu */
 .menu-items {
     display: grid;
-    grid-template-columns: 1fr; /* 1 kolom di semua ukuran layar */
+    grid-template-columns: repeat(5, 1fr); /* 5 kolom di desktop */
     gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .menu-items {
+        grid-template-columns: repeat(2, 1fr); /* 2 kolom di tablet */
+    }
+}
+
+@media (max-width: 576px) {
+    .menu-items {
+        grid-template-columns: 1fr; /* 1 kolom di HP */
+    }
 }
 
 .menu-item {
@@ -64,7 +76,8 @@ h1, h2 {
 
 .menu-item .img-container {
     width: 100%;
-    height: 250px; /* Sesuaikan tinggi sesuai keinginan */
+    height: auto; /* Ubah menjadi auto */
+    max-height: 180px; /* Batasi tinggi maksimum */
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -74,13 +87,13 @@ h1, h2 {
 }
 
 .menu-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Pertahankan rasio aspek dan penuhi container */
-    object-position: unset; /* Posisikan gambar di tengah */
-    border-radius: 0px;
-    margin-bottom: 0px;
+    width: 100%; /* Lebar gambar 100% dari container */
+    height: auto; /* Tinggi gambar menyesuaikan, tapi dengan rasio 1:1 */
+    object-fit: contain; /* Gambar akan di-resize untuk muat di dalam container tanpa terpotong */
+    object-position: center;
+    border-radius: 5px;
 }
+
 
 .menu-item h3 {
     margin-bottom: 5px;
