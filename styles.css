@@ -75,8 +75,8 @@ h1, h2 {
 }
 
 .menu-item .img-container {
-    width: 300px;
-    height: 300px; /* Sesuaikan tinggi di sini, misalnya 200px */
+    width: 100%;
+    height: 200px; /* Sesuaikan tinggi sesuai keinginan */
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -86,10 +86,11 @@ h1, h2 {
 }
 
 .menu-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Gunakan cover untuk mempertahankan rasio */
-    object-position: center;
+    width: auto; /* Ubah width menjadi auto */
+    max-width: 100%; /* Tambahkan max-width */
+    height: 200px; /* Samakan dengan tinggi img-container */
+    object-fit: cover; /* Pertahankan rasio aspek dan penuhi container */
+    object-position: center; /* Posisikan gambar di tengah */
     border-radius: 5px;
 }
 
