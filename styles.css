@@ -75,7 +75,7 @@ h1, h2 {
 }
 
 .menu-item .img-container {
-    width: 100%;
+    width: 300px;
     height: 300px; /* Sesuaikan tinggi di sini, misalnya 200px */
     overflow: hidden;
     display: flex;
