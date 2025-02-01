@@ -1,0 +1,360 @@
+body {
+    padding-top: 20px;
+    background-image: url("pasarrasa.png"); /* Ganti dengan nama file gambar Anda */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #000000;
+    overflow-x: hidden;
+}
+
+/* Styling untuk container utama */
+.container {
+    background-color: rgba(0, 26, 0, 0.7);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling untuk judul */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+/* Styling untuk video */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Aspek rasio 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Styling untuk item menu */
+.menu-items {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 kolom di semua ukuran layar */
+    gap: 20px;
+}
+
+.menu-item {
+    border: 1px solid #6c757d;
+    padding: 15px;
+    text-align: center;
+    background-color: rgba(0, 26, 0, 0.7);
+    border-radius: 5px;
+    transition: transform 0.2s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.menu-item .img-container {
+    width: 100%;
+    height: 250px; /* Sesuaikan tinggi sesuai keinginan */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.menu-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Pertahankan rasio aspek dan penuhi container */
+    object-position: unset; /* Posisikan gambar di tengah */
+    border-radius: 0px;
+    margin-bottom: 0px;
+}
+
+.menu-item h3 {
+    margin-bottom: 5px;
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.menu-item .price {
+    font-size: 1rem;
+    color: #FFFF00;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.menu-item .description {
+    font-size: 0.8rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.star-rating {
+    color: #FFFF00;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Styling untuk tombol "Tambah" */
+.menu-item .add-to-cart {
+    background-color: #008000;
+    border: none;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px
+}
+
+.menu-item .add-to-cart:hover {
+    background-color: #006400;
+}
+
+.menu-item .add-to-cart.clicked {
+    animation: pulsate 0.5s ease-out;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Keranjang Belanja */
+.col-md-4 {
+    background-color: rgba(0, 26, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 20px;
+}
+
+/* Judul Keranjang Belanja dengan Icon */
+.col-md-4 h2 {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.col-md-4 h2 img {
+    margin-right: 10px; /* Jarak antara icon dan teks */
+}
+
+.table {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.table th {
+    color: #008000; 
+    border-bottom: 2px solid #006400;
+}
+
+.table td {
+    border-top: 1px solid #006400;
+    vertical-align: middle;
+}
+
+/* Kolom কেরanjang */
+#cart-items tr td:nth-child(1) {
+    width: auto;
+    min-width: auto; 
+}
+
+/* Styling untuk total */
+.total-section {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 18px;
+    padding: 10px;
+    border-top: 2px solid #006400;
+}
+
+.total-section p {
+    color: #ffffff; 
+}
+
+.total-section #total-amount {
+    color: #ffffff;
+    margin-bottom: 10px; /* Margin bawah */
+}
+
+/* Styling untuk tombol "Batal" */
+.total-section #clear-cart {
+    background-color: #dc3545;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+}
+
+.total-section #clear-cart:hover {
+    background-color: #c82333;
+}
+
+/* Informasi Pelanggan */
+.customer-info {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: rgba(0, 26, 0, 0.7);
+    border-radius: 10px;
+}
+
+.customer-info label {
+    color: #ffffff;
+}
+
+/* Styling untuk input */
+.form-control {
+    background-color: rgba(0, 26, 0, 0.7);
+    border: 1px solid #006400;
+    color: #ffffff;
+}
+
+/* Styling untuk tombol "Kirim ke WhatsApp" */
+.customer-info #send-to-wa {
+    background-color: #008000;
+    border: none;
+}
+
+.customer-info #send-to-wa:hover {
+    background-color: #006400;
+    border: none;
+}
+
+/* Styling untuk tombol "Hapus" */
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c62837;
+    border: none;
+}
+.modal-content {
+    background-color: rgba(0, 26, 0, 0.9);
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    border-bottom: 2px solid #008000;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 30px;
+    text-align: center;
+}
+
+.modal-body p {
+    font-size: 1.1rem;
+}
+
+#success-icon {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    width: 80px;
+    height: auto;
+}
+
+.modal-footer {
+    border-top: 2px solid #008000;
+}
+.btn-close {
+    color: #ffffff;
+    opacity: 1;
+}
+/* Animasi modal */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translate(0, -50px);
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+.modal-body .text-center {
+    text-align: center;
+}
+
+.modal-body .text-center img {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    max-width: 100px;
+}
+
+.modal-body .text-center strong {
+    color: #FFFF00;
+}
+
+.modal-body .text-center .mt-3 {
+    margin-top: 1rem;
+}
+
+.modal-footer .btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.modal-footer .btn-success:hover {
+    background-color: #218838;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .col-md-8 {
+        width: 100%;
+    }
+
+    .col-md-4 {
+        width: 100%;
+    }
+
+    #cart-items tr td:nth-child(1) {
+        width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .total-section {
+        text-align: center;
+    }
+
+    .col-md-8 {
+        width: 100%;
+    }
+
+    .col-md-4 {
+        width: 100%;
+    }
+
+    #cart-items tr td:nth-child(1) {
+        width: auto;
+    }
+}
