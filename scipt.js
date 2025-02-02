@@ -274,7 +274,7 @@ sendToWaButton.addEventListener("click", () => {
     Terima kasih sudah memesan 🙏
         `;
     const encodedMessage = encodeURIComponent(message);
-    const waLink = `https://wa.me/6285720616046?text=${encodedMessage}`; // Ganti nomor WA di sini
+    const waLink = `https://wa.me/6283806048192?text=${encodedMessage}`; // Ganti nomor WA di sini
     window.open(waLink, "_blank");
 });
 
