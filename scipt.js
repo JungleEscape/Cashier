@@ -25,7 +25,12 @@ const menuItemsData = [
         name: "🌴TROPICAL QUEST🌴",
         price: 8000,
         image: "mangga.jpeg",
-        description: "Minuman tropis yang menyegarkan, memadukan es jeruk segar, nata de coco kenyal, dan biji selasih eksotis. Sensasi manis-asam yang pas, bagaikan menemukan oasis tersembunyi di tengah hutan liar! Varian rasa yg menggugah: Mangga🥭, Jeruk Peras 🍊, dan Milky Orange 🥛🍊Siap menuntaskan misi menyegarkan harimu? 🍊.",
+        description: "Minuman tropis yang menyegarkan, memadukan es jeruk segar, nata de coco kenyal, dan biji selasih eksotis.",
+        options: [
+            { name: "Mangga", price: 8000 },
+            { name: "Jeruk Peras", price: 8000 },
+            { name: "Milky Orange", price: 8000 }
+        ]
     },
     {
         name: "🍃SAVANNA SWIRL🍃",
@@ -102,7 +107,11 @@ function renderMenuItems() {
             const selectedOption = selectedOptionElement ? selectedOptionElement.value : null;
             addToCart(itemName, quantity, selectedOption);
 
-            // ... sisa kode event listener ...
+            // Menambahkan class 'clicked' untuk animasi pulsate
+            button.classList.add("clicked");
+            setTimeout(() => {
+                button.classList.remove("clicked");
+            }, 500); // Menghapus class 'clicked' setelah 500ms
         });
     });
 }

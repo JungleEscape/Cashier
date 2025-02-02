@@ -339,6 +339,19 @@ h1, h2 {
     background-color: #218838;
 }
 
+body{
+    position: relative; /* <-- tambahkan ini */
+    min-height: 100vh; /* <-- tambahkan ini */
+}
+
+#copyright {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+
 /* Responsiveness */
 @media (max-width: 768px) {
     .col-md-8 {
