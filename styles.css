@@ -6,7 +6,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: Arial, sans-serif;
-    color: #000000;
+    color: #ffffff;
     overflow-x: hidden;
 }
 
@@ -45,19 +45,8 @@ h1, h2 {
 .menu-items {
     display: grid;
     grid-template-columns: repeat(5, 1fr); /* 5 kolom di desktop */
+    grid-template-rows: 1fr; /* 1 baris di desktop */
     gap: 20px;
-}
-
-@media (max-width: 768px) {
-    .menu-items {
-        grid-template-columns: repeat(2, 1fr); /* 2 kolom di tablet */
-    }
-}
-
-@media (max-width: 576px) {
-    .menu-items {
-        grid-template-columns: 1fr; /* 1 kolom di HP */
-    }
 }
 
 .menu-item {
@@ -86,16 +75,15 @@ h1, h2 {
 }
 
 .menu-item img {
-    width: auto; /* Ubah width menjadi auto */
-    max-width: 100%; /* Tambahkan max-width */
-    height: 200px; /* Samakan dengan tinggi img-container */
+    width: 100%;
+    height: 100%;
     object-fit: cover; /* Pertahankan rasio aspek dan penuhi container */
     object-position: center; /* Posisikan gambar di tengah */
     border-radius: 5px;
 }
 
 .menu-item h3 {
-    margin-top: 10px; /* Tambahkan margin-top pada h3 */
+    margin-top: 10px;
     margin-bottom: 5px;
     color: #ffffff;
     font-size: 1.2rem;
@@ -147,6 +135,12 @@ h1, h2 {
     100% {
         transform: scale(1);
     }
+}
+
+.menu-item .pilih-rasa {
+    color: yellow; /* Warna kuning */
+    font-size: 0.9rem;
+    margin-bottom: 5px;
 }
 
 /* Keranjang Belanja */
@@ -339,21 +333,15 @@ h1, h2 {
     background-color: #218838;
 }
 
-body{
-    position: relative; /* <-- tambahkan ini */
-    min-height: 100vh; /* <-- tambahkan ini */
-}
-
-#copyright {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    font-size: 0.9rem;
-    color: #ffffff;
-}
-
 /* Responsiveness */
 @media (max-width: 768px) {
+    .menu-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .menu-item {
+        width: 100%;
+    }
+
     .col-md-8 {
         width: 100%;
     }
@@ -368,6 +356,10 @@ body{
 }
 
 @media (max-width: 576px) {
+    .menu-item {
+        width: 100%;
+    }
+
     .total-section {
         text-align: center;
     }
@@ -383,4 +375,12 @@ body{
     #cart-items tr td:nth-child(1) {
         width: auto;
     }
+}
+
+#copyright {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 0.9rem;
+    color: #ffffff;
 }

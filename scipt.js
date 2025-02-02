@@ -71,20 +71,20 @@ function renderMenuItems() {
         let optionsHTML = '';
         if (item.options) {
             optionsHTML = `
+                <p class="pilih-rasa"><strong>Pilih Rasa:</strong></p>
                 <select class="form-select mb-2" id="option-${index}">
                     ${item.options.map(option => `<option value="${option.name}">${option.name}</option>`).join('')}
                 </select>
             `;
         } else {
-            // Jika item tidak memiliki opsi, biarkan optionsHTML tetap kosong atau Anda bisa menghapus variabel ini
-            optionsHTML = '';
+            optionsHTML = ''; // Tetap kosong jika tidak ada pilihan
         }
 
         menuItemDiv.innerHTML = `
             <div class="img-container">
                 <img src="${item.image}" alt="${item.name}">
             </div>
-            <h3>${item.name}</h3>
+             <h3><strong>${item.name}</strong></h3>
             <span class="price">Rp ${item.price.toLocaleString()}</span>
             <span class="description">${item.description}</span>
             ${optionsHTML}
@@ -274,7 +274,7 @@ sendToWaButton.addEventListener("click", () => {
     Terima kasih sudah memesan 🙏
         `;
     const encodedMessage = encodeURIComponent(message);
-    const waLink = `https://wa.me/6283806048192?text=${encodedMessage}`; // Ganti nomor WA di sini
+    const waLink = `https://wa.me/6285720616046?text=${encodedMessage}`; // Ganti nomor WA di sini
     window.open(waLink, "_blank");
 });
 
