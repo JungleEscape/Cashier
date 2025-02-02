@@ -54,9 +54,11 @@ let promoCode = ""; // Variabel untuk menyimpan kode promo yang valid
 
 // Data promo (contoh)
 const promoCodes = {
-    "JUNGLEESCAPEQUESTWINNER": { discount: 0.3, minPurchase: 0 }, // Diskon 10%, min. pembelian 50k
-    "ALUMNIMANDASI": { discount: 0.1, minPurchase: 60000 }       // Diskon 15%, min. pembelian 60k
+    "ALUMNIMANDASI": 0.1, // Diskon 10%
 };
+
+const minPurchase = 60000; // Minimal pembelian Rp 50.000
+
 // Menampilkan item menu
 function renderMenuItems() {
     // Mengubah label "No Meja" menjadi "Kelas"
@@ -156,12 +158,6 @@ function removeFromCart(itemIndex) {
     updateCart();
 }
 
-// Fungsi untuk menangani klik tombol "Hapus"
-function handleDelete(event) {
-    const itemIndex = parseInt(event.target.dataset.index);
-    removeFromCart(itemIndex);
-}
-
 // Mengupdate tampilan keranjang dan total harga
 function updateCart() {
     cartItemsContainer.innerHTML = "";
@@ -198,23 +194,26 @@ function updateCart() {
         }, 50 * index); // Delay berdasarkan index item
     });
 
-    // Hitung diskon (hanya jika mencapai minimal pembelian)
-    const discountAmount = totalPrice >= promoCodes[promoCode]?.minPurchase ? totalPrice * discount : 0;
-    const finalPrice = totalPrice - discountAmount;
-
-    // Menampilkan total harga dan diskon
-    const totalAmountElement = document.getElementById("total-amount");
-    totalAmountElement.innerHTML = `
-        <p>Subtotal: Rp ${totalPrice.toLocaleString()}</p>
-        ${totalPrice >= promoCodes[promoCode]?.minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
-        <p>Total Harga: Rp ${finalPrice.toLocaleString()}</p>
-    `;
+       // Hitung diskon (hanya jika mencapai minimal pembelian)
+       const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
+       const finalPrice = totalPrice - discountAmount;
+   
+       // Menampilkan total harga dan diskon
+       const totalAmountElement = document.getElementById("total-amount");
+       totalAmountElement.innerHTML = `
+           <p>Subtotal: Rp ${totalPrice.toLocaleString()}</p>
+           ${totalPrice >= minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
+           <p>Total Harga: Rp ${finalPrice.toLocaleString()}</p>
+       `;
+   
 
     // Event listener untuk tombol "Hapus" pada keranjang
     const removeFromCartButtons = document.querySelectorAll(".remove-from-cart");
     removeFromCartButtons.forEach(button => {
-        button.removeEventListener("click", handleDelete); // Hapus event listener lama
-        button.addEventListener("click", handleDelete); // Pasang event listener baru
+        button.addEventListener("click", () => {
+            const itemIndex = parseInt(button.dataset.index);
+            removeFromCart(itemIndex);
+        });
     });
 }
 
@@ -228,43 +227,26 @@ clearCartButton.addEventListener("click", () => {
 function applyPromoCode() {
     const promoCodeInput = document.getElementById("promo-code");
     const enteredPromoCode = promoCodeInput.value.toUpperCase();
-    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
-    const modalTitle = document.getElementById('promoModalLabel');
-    const modalBody = document.querySelector('.modal-body');
 
     if (promoCodes[enteredPromoCode]) {
-        const selectedPromo = promoCodes[enteredPromoCode];
-        if (totalPrice >= selectedPromo.minPurchase) {
-            discount = selectedPromo.discount;
+        if (totalPrice >= minPurchase) { // Cek apakah total belanja >= minimal pembelian
+            discount = promoCodes[enteredPromoCode];
             promoCode = enteredPromoCode;
 
-            // Menampilkan modal untuk kode promo yang valid
-            modalTitle.innerHTML = '<i class="fas fa-check-circle text-success"></i> Kode Promo Berhasil!';
-            modalBody.innerHTML = `
-                <img src="verified.gif" alt="Success Icon" id="success-icon" width="80">
-                <p class="mt-3">Selamat! Anda telah berhasil menggunakan kode promo <strong id="promo-code-display">${promoCode}</strong></p>
-                <p>🎉 Selamat berbelanja! 🎉</p>
-            `;
+            // Menampilkan modal
+            const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+            document.getElementById("promo-code-display").textContent = promoCode;
             promoModal.show();
+
             updateCart();
         } else {
-            modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
-            modalBody.innerHTML = `
-                <img src="X.gif" alt="Error Icon" id="error-icon" width="80">
-                <p class="mt-3">Maaf, minimal pembelian untuk menggunakan kode promo ini adalah Rp ${selectedPromo.minPurchase.toLocaleString()}</p>
-            `;
-            promoModal.show();
+            alert(`Maaf, minimal pembelian untuk menggunakan kode promo ini adalah Rp ${minPurchase.toLocaleString()}`);
             discount = 0;
             promoCode = "";
             updateCart();
         }
     } else {
-        modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
-        modalBody.innerHTML = `
-            <img src="X.gif" alt="Error Icon" id="error-icon" width="80">
-            <p class="mt-3">MAAF, KODE PROMO TERSEBUT TIDAK BERLAKU</p>
-        `;
-        promoModal.show();
+        alert("MAAF, KODE PROMO TERSEBUT TIDAK BERLAKU");
         discount = 0;
         promoCode = "";
         updateCart();
@@ -285,7 +267,7 @@ sendToWaButton.addEventListener("click", () => {
     }
 
     // Hitung total harga setelah diskon
-    const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
+    const discountAmount = totalPrice * discount;
     const finalPrice = totalPrice - discountAmount;
 
     // Format pesan yang lebih rapi
@@ -298,7 +280,7 @@ sendToWaButton.addEventListener("click", () => {
 ${cart.map(item => `• *${item.name}* ${item.option ? `(${item.option})` : ''} - ${item.quantity} x Rp ${item.price.toLocaleString()}`).join('\n')}
 
 *Subtotal:* Rp ${totalPrice.toLocaleString()}
-${totalPrice >= minPurchase ? `*Diskon (${promoCode}):* Rp ${discountAmount.toLocaleString()}` : ''}
+*Diskon (${promoCode}):* Rp ${discountAmount.toLocaleString()}
 *Total Harga:* *Rp ${finalPrice.toLocaleString()}*
 
 Terima kasih sudah memesan 🙏
