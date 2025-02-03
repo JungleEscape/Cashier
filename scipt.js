@@ -55,6 +55,7 @@ let promoCode = ""; // Variabel untuk menyimpan kode promo yang valid
 // Data promo (contoh)
 const promoCodes = {
     "ALUMNIMANDASI": 0.1, // Diskon 10%
+     "HEMAT5": 0.05,
 };
 
 const minPurchase = 60000; // Minimal pembelian Rp 50.000
