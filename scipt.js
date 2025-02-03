@@ -46,6 +46,7 @@ const clearCartButton = document.getElementById("clear-cart");
 const customerNameInput = document.getElementById("customer-name");
 const classInput = document.getElementById("class-input");
 const sendToWaButton = document.getElementById("send-to-wa");
+const orderDateInput = document.getElementById("order-date");
 
 let cart = [];
 let totalPrice = 0;
@@ -55,10 +56,10 @@ let promoCode = ""; // Variabel untuk menyimpan kode promo yang valid
 // Data promo (contoh)
 const promoCodes = {
     "ALUMNIMANDASI": 0.1, // Diskon 10%
-    "HEMAT5": 0.05,
+    "HEMAT5": 0.05       // Diskon 15%
 };
 
-const minPurchase = 60000; // Minimal pembelian Rp 50.000
+const minPurchase = 50000; // Minimal pembelian Rp 50.000
 
 // Menampilkan item menu
 function renderMenuItems() {
@@ -159,6 +160,12 @@ function removeFromCart(itemIndex) {
     updateCart();
 }
 
+// Fungsi untuk menangani klik tombol "Hapus"
+function handleDelete(event) {
+    const itemIndex = parseInt(event.target.dataset.index);
+    removeFromCart(itemIndex);
+}
+
 // Mengupdate tampilan keranjang dan total harga
 function updateCart() {
     cartItemsContainer.innerHTML = "";
@@ -195,26 +202,23 @@ function updateCart() {
         }, 50 * index); // Delay berdasarkan index item
     });
 
-       // Hitung diskon (hanya jika mencapai minimal pembelian)
-       const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
-       const finalPrice = totalPrice - discountAmount;
-   
-       // Menampilkan total harga dan diskon
-       const totalAmountElement = document.getElementById("total-amount");
-       totalAmountElement.innerHTML = `
-           <p>Subtotal: Rp ${totalPrice.toLocaleString()}</p>
-           ${totalPrice >= minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
-           <p>Total Harga: Rp ${finalPrice.toLocaleString()}</p>
-       `;
-   
+    // Hitung diskon (hanya jika mencapai minimal pembelian)
+    const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
+    const finalPrice = totalPrice - discountAmount;
+
+    // Menampilkan total harga dan diskon
+    const totalAmountElement = document.getElementById("total-amount");
+    totalAmountElement.innerHTML = `
+        <p>Subtotal: Rp ${totalPrice.toLocaleString()}</p>
+        ${totalPrice >= minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
+        <p>Total Harga: Rp ${finalPrice.toLocaleString()}</p>
+    `;
 
     // Event listener untuk tombol "Hapus" pada keranjang
     const removeFromCartButtons = document.querySelectorAll(".remove-from-cart");
     removeFromCartButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const itemIndex = parseInt(button.dataset.index);
-            removeFromCart(itemIndex);
-        });
+        button.removeEventListener("click", handleDelete); // Hapus event listener lama
+        button.addEventListener("click", handleDelete); // Pasang event listener baru
     });
 }
 
@@ -228,31 +232,49 @@ clearCartButton.addEventListener("click", () => {
 function applyPromoCode() {
     const promoCodeInput = document.getElementById("promo-code");
     const enteredPromoCode = promoCodeInput.value.toUpperCase();
+    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+    const modalTitle = document.getElementById('promoModalLabel');
+    const modalBody = document.querySelector('.modal-body');
 
     if (promoCodes[enteredPromoCode]) {
-        if (totalPrice >= minPurchase) { // Cek apakah total belanja >= minimal pembelian
-            discount = promoCodes[enteredPromoCode];
+        const selectedPromo = promoCodes[enteredPromoCode];
+        if (totalPrice >= selectedPromo.minPurchase) {
+            discount = selectedPromo.discount;
             promoCode = enteredPromoCode;
 
-            // Menampilkan modal
-            const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
-            document.getElementById("promo-code-display").textContent = promoCode;
+            // Menampilkan modal untuk kode promo yang valid
+            modalTitle.innerHTML = '<i class="fas fa-check-circle text-success"></i> Kode Promo Berhasil!';
+            modalBody.innerHTML = `
+                <img src="images/success.gif" alt="Success Icon" id="success-icon" width="80">
+                <p class="mt-3">Selamat! Anda telah berhasil menggunakan kode promo <strong id="promo-code-display">${promoCode}</strong></p>
+                <p>🎉 Selamat berbelanja! 🎉</p>
+            `;
             promoModal.show();
-
             updateCart();
         } else {
-            alert(`Maaf, minimal pembelian untuk menggunakan kode promo ini adalah Rp ${minPurchase.toLocaleString()}`);
+            modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
+            modalBody.innerHTML = `
+                <img src="images/error.gif" alt="Error Icon" id="error-icon" width="80">
+                <p class="mt-3">Maaf, minimal pembelian untuk menggunakan kode promo ini adalah Rp ${selectedPromo.minPurchase.toLocaleString()}</p>
+            `;
+            promoModal.show();
             discount = 0;
             promoCode = "";
             updateCart();
         }
     } else {
-        alert("MAAF, KODE PROMO TERSEBUT TIDAK BERLAKU");
+        modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
+        modalBody.innerHTML = `
+            <img src="images/error.gif" alt="Error Icon" id="error-icon" width="80">
+            <p class="mt-3">MAAF, KODE PROMO TERSEBUT TIDAK BERLAKU</p>
+        `;
+        promoModal.show();
         discount = 0;
         promoCode = "";
         updateCart();
     }
 }
+
 // Event listener untuk tombol "Terapkan"
 const applyPromoButton = document.getElementById("apply-promo");
 applyPromoButton.addEventListener("click", applyPromoCode);
@@ -261,27 +283,29 @@ applyPromoButton.addEventListener("click", applyPromoCode);
 sendToWaButton.addEventListener("click", () => {
     const customerName = customerNameInput.value;
     const className = classInput.value;
+    const orderDate = orderDateInput.value;
 
-    if (!customerName || !className) {
-        alert("Harap isi nama pembeli dan kelas!");
+    if (!customerName || !className || !orderDate) {
+        alert("Harap isi nama pembeli, kelas / alamat lengkap, dan tanggal pemesanan!");
         return;
     }
 
     // Hitung total harga setelah diskon
-    const discountAmount = totalPrice * discount;
+    const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
     const finalPrice = totalPrice - discountAmount;
 
     // Format pesan yang lebih rapi
     let message = `
 *== PESANAN BARU ==*
 *Nama Pembeli:* ${customerName}
-*Kelas:* ${className}
+*Kelas / Alamat Lengkap:* ${className}
+*Tanggal:* ${orderDate}
 
 *Detail Pesanan:*
 ${cart.map(item => `• *${item.name}* ${item.option ? `(${item.option})` : ''} - ${item.quantity} x Rp ${item.price.toLocaleString()}`).join('\n')}
 
 *Subtotal:* Rp ${totalPrice.toLocaleString()}
-*Diskon (${promoCode}):* Rp ${discountAmount.toLocaleString()}
+${totalPrice >= minPurchase ? `*Diskon (${promoCode}):* Rp ${discountAmount.toLocaleString()}` : ''}
 *Total Harga:* *Rp ${finalPrice.toLocaleString()}*
 
 Terima kasih sudah memesan 🙏
