@@ -55,10 +55,9 @@ let promoCode = ""; // Variabel untuk menyimpan kode promo yang valid
 
 // Data promo (contoh)
 const promoCodes = {
-    "ALUMNIMANDASI": 0.1, // Diskon 10%
-    "HEMAT5": 0.05       // Diskon 15%
+    "ALUMNIMANDASI": { discount: 0.1, minPurchase: 60000 }, // Diskon 10%, min. pembelian 50k
+    "HEMAT5": { discount: 0.05, minPurchase: 50000 }       // Diskon 15%, min. pembelian 60k
 };
-
 const minPurchase = 50000; // Minimal pembelian Rp 50.000
 
 // Menampilkan item menu
@@ -66,7 +65,7 @@ function renderMenuItems() {
     // Mengubah label "No Meja" menjadi "Kelas"
     const tableNumberLabel = document.querySelector('label[for="table-number"]');
     if (tableNumberLabel) {
-        tableNumberLabel.textContent = "Kelas:";
+        tableNumberLabel.textContent = "Kelas/alamat lengkap:";
     }
 
     menuItemsData.forEach((item, index) => {
@@ -245,7 +244,7 @@ function applyPromoCode() {
             // Menampilkan modal untuk kode promo yang valid
             modalTitle.innerHTML = '<i class="fas fa-check-circle text-success"></i> Kode Promo Berhasil!';
             modalBody.innerHTML = `
-                <img src="images/success.gif" alt="Success Icon" id="success-icon" width="80">
+                <img src="verified.gif" alt="Success Icon" id="success-icon" width="80">
                 <p class="mt-3">Selamat! Anda telah berhasil menggunakan kode promo <strong id="promo-code-display">${promoCode}</strong></p>
                 <p>🎉 Selamat berbelanja! 🎉</p>
             `;
@@ -254,7 +253,7 @@ function applyPromoCode() {
         } else {
             modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
             modalBody.innerHTML = `
-                <img src="images/error.gif" alt="Error Icon" id="error-icon" width="80">
+                <img src="X.gif" alt="Error Icon" id="error-icon" width="80">
                 <p class="mt-3">Maaf, minimal pembelian untuk menggunakan kode promo ini adalah Rp ${selectedPromo.minPurchase.toLocaleString()}</p>
             `;
             promoModal.show();
@@ -265,7 +264,7 @@ function applyPromoCode() {
     } else {
         modalTitle.innerHTML = '<i class="fas fa-times-circle text-danger"></i> Kode Promo Tidak Valid!';
         modalBody.innerHTML = `
-            <img src="images/error.gif" alt="Error Icon" id="error-icon" width="80">
+            <img src="X.gif" alt="Error Icon" id="error-icon" width="80">
             <p class="mt-3">MAAF, KODE PROMO TERSEBUT TIDAK BERLAKU</p>
         `;
         promoModal.show();
