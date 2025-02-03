@@ -298,7 +298,7 @@ sendToWaButton.addEventListener("click", () => {
 *== PESANAN BARU ==*
 *Nama Pembeli:* ${customerName}
 *Kelas / Alamat Lengkap:* ${className}
-*Tanggal:* ${orderDate}
+*Untuk Tanggal:* ${orderDate}
 
 *Detail Pesanan:*
 ${cart.map(item => `• *${item.name}* ${item.option ? `(${item.option})` : ''} - ${item.quantity} x Rp ${item.price.toLocaleString()}`).join('\n')}
