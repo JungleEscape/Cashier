@@ -11,8 +11,8 @@ const menuItemsData = [
         image: "samyang.jpeg",
         description: "Sensasi pedas yang mengguncang! Samyang super pedas dibalut dengan rice paper kenyal.",
         options: [
-            { name: "Spicy Nori", price: 5000 },
-            { name: "Carbonara", price: 5000 }
+            { name: "Pedas", price: 5000 },
+            { name: "Keju", price: 5000 }
         ]
     },
     {
@@ -20,6 +20,7 @@ const menuItemsData = [
         price: 5000,
         image: "kue.jpeg",
         description: "Kombinasi cheesecake lembut dan Oreo crunchy yang menghadirkan ledakan rasa sehebat kekuatan badak liar! Tekstur creamy berpadu dengan kelembutan keju dan kepingan Oreo yang kaya rasa, siap memanjakan lidahmu di setiap suapan! 🍰💥",
+        isSoldOut: true // Ditandai sebagai sold out
     },
     {
         name: "🌴TROPICAL QUEST🌴",
@@ -50,22 +51,22 @@ const orderDateInput = document.getElementById("order-date");
 
 let cart = [];
 let totalPrice = 0;
-let discount = 0; // Variabel untuk menyimpan nilai diskon
-let promoCode = ""; // Variabel untuk menyimpan kode promo yang valid
+let discount = 0;
+let promoCode = "";
+
+const minPurchase = 0; // Minimal pembelian, deklarasikan di sini
 
 // Data promo (contoh)
 const promoCodes = {
-    "ALUMNIMANDASI": { discount: 0.1, minPurchase: 60000 }, // Diskon 10%, min. pembelian 50k
-    "HEMAT5": { discount: 0.05, minPurchase: 50000 }       // Diskon 15%, min. pembelian 60k
+    "SIREGARCOFFEE": { discount: 0.1, minPurchase: 50000 },
+    "HEMAT15": { discount: 0.15, minPurchase: 60000 }
 };
-const minPurchase = 50000; // Minimal pembelian Rp 50.000
 
-// Menampilkan item menu
+
 function renderMenuItems() {
-    // Mengubah label "No Meja" menjadi "Kelas"
-    const tableNumberLabel = document.querySelector('label[for="table-number"]');
-    if (tableNumberLabel) {
-        tableNumberLabel.textContent = "Kelas/alamat lengkap:";
+    const classInputLabel = document.querySelector('label[for="class-input"]');
+    if (classInputLabel) {
+        classInputLabel.innerHTML = "<strong>Kelas / Alamat Lengkap:</strong>";
     }
 
     menuItemsData.forEach((item, index) => {
@@ -75,17 +76,14 @@ function renderMenuItems() {
         let optionsHTML = '';
         if (item.options) {
             optionsHTML = `
-                <p class="pilih-rasa"><strong>Pilih Rasa:</strong></p> 
+                <p class="pilih-rasa"><strong>Pilih Rasa:</strong></p>
                 <select class="form-select mb-2" id="option-${index}">
                     ${item.options.map(option => `<option value="${option.name}">${option.name}</option>`).join('')}
                 </select>
             `;
-        } else {
-            // Jika item tidak memiliki opsi, biarkan optionsHTML tetap kosong atau Anda bisa menghapus variabel ini
-            optionsHTML = '';
         }
 
-        menuItemDiv.innerHTML = `
+        let itemContent = `
             <div class="img-container">
                 <img src="${item.image}" alt="${item.name}">
             </div>
@@ -96,6 +94,24 @@ function renderMenuItems() {
             <input type="number" min="1" value="1" class="form-control quantity-input mb-2" id="quantity-${index}">
             <button class="btn btn-primary add-to-cart" data-name="${item.name}" data-index="${index}">Tambah</button>
         `;
+
+        if (item.isSoldOut) {
+            menuItemDiv.classList.add("sold-out");
+            itemContent = `
+            <div class="img-container">
+                <img src="${item.image}" alt="${item.name}" style="filter: grayscale(100%); opacity: 0.7;">
+            </div>
+            <h3><strong>${item.name}</strong></h3>
+            <span class="price">Rp ${item.price.toLocaleString()}</span>
+            <span class="description">${item.description}</span>
+            ${optionsHTML}
+            <input type="number" min="1" value="1" class="form-control quantity-input mb-2" id="quantity-${index}" disabled>
+            <button class="btn btn-primary add-to-cart" data-name="${item.name}" data-index="${index}" disabled>Tambah</button>
+            <p class="sold-out">SOLD OUT</p>
+            `;
+        }
+
+        menuItemDiv.innerHTML = itemContent;
         menuItemsContainer.appendChild(menuItemDiv);
     });
 
@@ -103,25 +119,24 @@ function renderMenuItems() {
     const addToCartButtons = document.querySelectorAll(".add-to-cart");
     addToCartButtons.forEach(button => {
         button.addEventListener("click", () => {
-            const itemIndex = button.dataset.index;
-            const quantityInput = document.getElementById(`quantity-${itemIndex}`);
-            const quantity = parseInt(quantityInput.value);
-            const itemName = button.dataset.name;
-            // Mendapatkan nilai opsi yang dipilih, bisa null jika tidak ada elemen select
-            const selectedOptionElement = document.getElementById(`option-${itemIndex}`);
-            const selectedOption = selectedOptionElement ? selectedOptionElement.value : null;
-            addToCart(itemName, quantity, selectedOption);
+            if (!button.disabled) {
+                const itemIndex = button.dataset.index;
+                const quantityInput = document.getElementById(`quantity-${itemIndex}`);
+                const quantity = parseInt(quantityInput.value);
+                const itemName = button.dataset.name;
+                const selectedOptionElement = document.getElementById(`option-${itemIndex}`);
+                const selectedOption = selectedOptionElement ? selectedOptionElement.value : null;
+                addToCart(itemName, quantity, selectedOption);
 
-            // Menambahkan class 'clicked' untuk animasi pulsate
-            button.classList.add("clicked");
-            setTimeout(() => {
-                button.classList.remove("clicked");
-            }, 500); // Menghapus class 'clicked' setelah 500ms
+                button.classList.add("clicked");
+                setTimeout(() => {
+                    button.classList.remove("clicked");
+                }, 500);
+            }
         });
     });
 }
 
-// Menambahkan item ke keranjang
 function addToCart(itemName, quantity, selectedOption) {
     const item = menuItemsData.find(item => item.name === itemName);
     if (item) {
@@ -146,26 +161,21 @@ function addToCart(itemName, quantity, selectedOption) {
     }
 }
 
-// Mengurangi Qty item atau menghapus item dari keranjang
 function removeFromCart(itemIndex) {
     const item = cart[itemIndex];
-
     if (item.quantity > 1) {
-        item.quantity--; // Kurangi Qty sebanyak 1
+        item.quantity--;
     } else {
-        cart.splice(itemIndex, 1); // Hapus item jika Qty = 1
+        cart.splice(itemIndex, 1);
     }
-
     updateCart();
 }
 
-// Fungsi untuk menangani klik tombol "Hapus"
 function handleDelete(event) {
     const itemIndex = parseInt(event.target.dataset.index);
     removeFromCart(itemIndex);
 }
 
-// Mengupdate tampilan keranjang dan total harga
 function updateCart() {
     cartItemsContainer.innerHTML = "";
     totalPrice = 0;
@@ -174,7 +184,6 @@ function updateCart() {
         const subtotal = item.price * item.quantity;
         totalPrice += subtotal;
 
-        // Menampilkan nama item dengan pilihan rasa (jika ada)
         const itemNameWithOption = item.option ? `${item.name} (${item.option})` : item.name;
 
         const cartItemRow = document.createElement("tr");
@@ -187,47 +196,40 @@ function updateCart() {
                 <button class="btn btn-sm btn-danger remove-from-cart" data-index="${index}">Hapus</button>
             </td>
         `;
-
-        // Menambahkan animasi (contoh: fadeIn dan slide dari kiri)
-        cartItemRow.style.opacity = 0;
-        cartItemRow.style.transform = 'translateX(-20px)';
         cartItemsContainer.appendChild(cartItemRow);
 
-        // Animasi dengan sedikit delay
+        cartItemRow.style.opacity = 0;
+        cartItemRow.style.transform = 'translateX(-20px)';
+
         setTimeout(() => {
             cartItemRow.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             cartItemRow.style.opacity = 1;
             cartItemRow.style.transform = 'translateX(0)';
-        }, 50 * index); // Delay berdasarkan index item
+        }, 50 * index);
     });
 
-    // Hitung diskon (hanya jika mencapai minimal pembelian)
-    const discountAmount = totalPrice >= minPurchase ? totalPrice * discount : 0;
+    const discountAmount = totalPrice >= promoCodes[promoCode]?.minPurchase ? totalPrice * discount : 0;
     const finalPrice = totalPrice - discountAmount;
 
-    // Menampilkan total harga dan diskon
     const totalAmountElement = document.getElementById("total-amount");
     totalAmountElement.innerHTML = `
         <p>Subtotal: Rp ${totalPrice.toLocaleString()}</p>
-        ${totalPrice >= minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
+        ${totalPrice >= promoCodes[promoCode]?.minPurchase ? `<p>Diskon (${promoCode}): Rp ${discountAmount.toLocaleString()}</p>` : ''}
         <p>Total Harga: Rp ${finalPrice.toLocaleString()}</p>
     `;
 
-    // Event listener untuk tombol "Hapus" pada keranjang
     const removeFromCartButtons = document.querySelectorAll(".remove-from-cart");
     removeFromCartButtons.forEach(button => {
-        button.removeEventListener("click", handleDelete); // Hapus event listener lama
-        button.addEventListener("click", handleDelete); // Pasang event listener baru
+        button.removeEventListener("click", handleDelete);
+        button.addEventListener("click", handleDelete);
     });
 }
 
-// Mengosongkan keranjang
 clearCartButton.addEventListener("click", () => {
     cart = [];
     updateCart();
 });
 
-// Menerapkan kode promo
 function applyPromoCode() {
     const promoCodeInput = document.getElementById("promo-code");
     const enteredPromoCode = promoCodeInput.value.toUpperCase();
@@ -241,7 +243,6 @@ function applyPromoCode() {
             discount = selectedPromo.discount;
             promoCode = enteredPromoCode;
 
-            // Menampilkan modal untuk kode promo yang valid
             modalTitle.innerHTML = '<i class="fas fa-check-circle text-success"></i> Kode Promo Berhasil!';
             modalBody.innerHTML = `
                 <img src="verified.gif" alt="Success Icon" id="success-icon" width="80">
@@ -274,11 +275,9 @@ function applyPromoCode() {
     }
 }
 
-// Event listener untuk tombol "Terapkan"
 const applyPromoButton = document.getElementById("apply-promo");
 applyPromoButton.addEventListener("click", applyPromoCode);
 
-// Mengirim data ke WhatsApp
 sendToWaButton.addEventListener("click", () => {
     const customerName = customerNameInput.value;
     const className = classInput.value;
@@ -315,5 +314,5 @@ Terima kasih sudah memesan 🙏
     window.open(waLink, "_blank");
 });
 
-// Inisialisasi
+
 renderMenuItems();

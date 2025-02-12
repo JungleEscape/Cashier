@@ -57,16 +57,17 @@
                         <input type="text" class="form-control" id="class-input">
                     </div>
                     <div class="mb-3">
-                        <label for="promo-code" class="form-label">Kode Promo:<strong>(opsional)</strong></label>
+                        <label for="promo-code" class="form-label">Kode Promo:</label>
                         <input type="text" class="form-control" id="promo-code">
                         <button class="btn btn-secondary mt-2" id="apply-promo">Terapkan</button>
                     </div>
                     <div class="mb-3">
-                        <label for="order-date" class="form-label"><strong>Untuk Tanggal:</strong></label>
+                        <label for="order-date" class="form-label"><strong>Tanggal Pemesanan:</strong></label>
                         <select class="form-select" id="order-date">
-                            <option value="19">19</option>
+                            <option value="19" disabled>19 (Close Order)</option>
                             <option value="20">20</option>
                         </select>
+                        <small class="text-danger">Tanggal 19 sudah close order.</small>
                     </div>
                     <button class="btn btn-primary" id="send-to-wa">Kirim ke WhatsApp</button>
                 </div>
