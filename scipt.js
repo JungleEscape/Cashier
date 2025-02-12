@@ -58,8 +58,8 @@ const minPurchase = 0; // Minimal pembelian, deklarasikan di sini
 
 // Data promo (contoh)
 const promoCodes = {
-    "SIREGARCOFFEE": { discount: 0.1, minPurchase: 50000 },
-    "HEMAT15": { discount: 0.15, minPurchase: 60000 }
+    "ALUMNIMANDASI": { discount: 0.1, minPurchase: 60000 },
+    "HEMAT5": { discount: 0.05, minPurchase: 50000 }
 };
 
 
