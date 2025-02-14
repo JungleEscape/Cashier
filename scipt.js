@@ -4,6 +4,7 @@ const menuItemsData = [
         price: 12000,
         image: "kimab.jpeg",
         description: "Kimbap ayam suwir yang menggoda dengan sentuhan bumbu rahasia, menghadirkan sensasi gurih, pedas, dan manis dalam setiap gigitan. Dibungkus dengan rumput laut yang renyah dan nasi lembut, menu ini siap membawamu ke petualangan rasa yang tak terlupakan! 🌿🔥.",
+        isSoldOut:true
     },
     {
         name: "🔥SPICY FURY ROLL🔥",
@@ -13,7 +14,8 @@ const menuItemsData = [
         options: [
             { name: "Pedas", price: 5000 },
             { name: "Keju", price: 5000 }
-        ]
+        ],
+        isSoldOut:true
     },
     {
         name: "🦏BLACK RHINO CHEESECAKE🦏",
@@ -31,13 +33,15 @@ const menuItemsData = [
             { name: "Mangga", price: 8000 },
             { name: "Jeruk Peras", price: 8000 },
             { name: "Milky Orange", price: 8000 }
-        ]
+        ],
+        isSoldOut:true
     },
     {
         name: "🍃SAVANNA SWIRL🍃",
         price: 8000,
         image: "oreominum.jpeg",
         description: "Nikmati kelembutan milk tea yang creamy berpadu dengan remahan Oreo renyah, menciptakan sensasi segar seperti angin sejuk yang berembus di padang savana. Setiap tegukan menghadirkan keseimbangan rasa manis yang pas, bikin mood langsung naik! 🏜️❄️",
+        isSoldOut:true
     }
 ];
 
@@ -54,12 +58,11 @@ let totalPrice = 0;
 let discount = 0;
 let promoCode = "";
 
-const minPurchase = 0; // Minimal pembelian, deklarasikan di sini
+const minPurchase = 0; 
 
-// Data promo (contoh)
 const promoCodes = {
-    "ALUMNIMANDASI": { discount: 0.1, minPurchase: 60000 },
-    "HEMAT5": { discount: 0.05, minPurchase: 50000 }
+    "a": { discount: 0.1, minPurchase: 50000 },
+    "HEMAT15": { discount: 0.15, minPurchase: 60000 }
 };
 
 
@@ -114,6 +117,7 @@ function renderMenuItems() {
         menuItemDiv.innerHTML = itemContent;
         menuItemsContainer.appendChild(menuItemDiv);
     });
+    
 
     // Event listener untuk tombol "Tambah"
     const addToCartButtons = document.querySelectorAll(".add-to-cart");
